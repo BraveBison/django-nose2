@@ -3,14 +3,19 @@ import sys
 from contextlib import contextmanager
 import logging
 
-from django.test import simple
+try:
+    from django.test.runner import DiscoverRunner
+except ImportError:
+    # Below django 1.8 simple was required
+    from django.test import simple as DiscoverRunner
+
 from nose2.main import discover
 
 
 log = logging.getLogger(__name__)
 
 
-class TestRunner(simple.DjangoTestSuiteRunner):
+class TestRunner(DiscoverRunner):
 
     err_count = 0
     _hooks = ('startTestRun', 'reportFailure', 'reportError')
